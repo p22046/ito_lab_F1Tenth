@@ -26,7 +26,7 @@ ROS Noeticがインストールされていない場合は、公式ドキュメ�
 
 ### 2. Catkinワークスペースの作成
 
-bash
+```bash
 mkdir -p ~/catkin_ws/src
 cd ~/catkin_ws/src
 
@@ -37,7 +37,7 @@ git clone [https://github.com/p22046/ito_lab_F1Tenth.git](https://github.com/p22
 ### 4. 依存パッケージのインストール
 このプロジェクトは、以下のROSパッケージに依存しています。
 
-Bash
+```bash
 
 sudo apt-get update
 sudo apt-get install ros-noetic-laser-filters \
@@ -46,38 +46,42 @@ sudo apt-get install ros-noetic-laser-filters \
                      ros-noetic-rviz \
                      ros-noetic-robot-self-filter \
                      ros-noetic-xacro # URDF/XACROを扱うため
-
+```
 ### 5.aspberry Pi 固有の依存関係
 もしRaspberry Pi上で実行する場合、pigpioライブラリが必要です。
 
-Bash
+```bash
 
 sudo apt-get install pigpio python3-pigpio
 sudo systemctl enable pigpiod
 sudo systemctl start pigpiod
-5. Catkinワークスペースのビルド
-Bash
+```
+ Catkinワークスペースのビルド
+```bash
 
 cd ~/catkin_ws
 catkin_make
 source devel/setup.bash
+```
 注意: source devel/setup.bash は新しいターミナルを開くたびに実行するか、.bashrc に追加してください。
 
 実行方法
 1. RPLIDARのシリアルポート設定
 RPLIDARが接続されているUSBポートのパーミッションを設定します。通常、/dev/ttyUSB0 です。
 
-Bash
+```bash
 
 sudo chmod 666 /dev/ttyUSB0
+```
 注意: これは一時的な設定です。永続化するにはudevルールを設定する必要があります。
 
 2. メインLaunchファイルの実行
 すべてのノードを起動するには、以下のLaunchファイルを実行します。
 
-Bash
+```bash
 
 roslaunch ito_lab_F1Tenth auto_drive.launch
+```
 このコマンドを実行すると、以下のノードが起動します。
 
 robot_state_publisher: ロボットのURDFモデルを公開
