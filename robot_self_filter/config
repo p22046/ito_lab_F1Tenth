@@ -1,0 +1,38 @@
+filters:
+  # ----------------------------------------------------
+  # 1. Self-filter based on Robot Model (推奨)
+  #    ロボットのURDFモデルに基づいて、ロボット自身の形状と重なるLidar点を削除します。
+  #    このフィルターを使うには、`robot_self_filter`パッケージがインストールされている必要があります。
+  #    sudo apt-get install ros-noetic-robot-self-filter
+
+  - name: "robot_body_filter"
+    type: "robot_self_filter/LaserScanSelfFilter"
+    params:
+      # Lidarのデッドゾーンを設定。これより近い点はロボット自身と見なしやすい。
+      # FreeSpaceNavigatorのself.LIDAR_DEAD_ZONE_RADIUS (0.26m) を参考に調整。
+      min_sensor_range: 0.25 
+      max_sensor_range: 12.0 # Lidarの最大有効範囲 (これより遠い点は無視)
+      
+      # URDFモデルがロードされているROSパラメータ名を指定 (デフォルトで robot_description)
+      model_param_name: robot_description 
+
+      # パディング: ロボットの形状にどれくらい余裕を持たせるか。
+      # デフォルト: padding_scale: 1.0, padding_offset: 0.0
+      # ロボットの輪郭を少し膨らませることで、接触を避ける。
+      # padding_scale を1.0より大きくするとロボットの認識範囲が広がり、回避が早まる
+      padding_scale: 1.0 # 1.0 であればURDFの形状そのまま
+      padding_offset: 0.0 # オフセット (m)
+
+  # ----------------------------------------------------
+  # 2. Angle Filter (オプション: 角度範囲でデータを削除)
+  #    特定の角度範囲のLidarデータを削除します。
+  #    もしロボットの後方に常に何か（例えばバッテリーボックスやケーブル）がLidarの死角に入り込み、
+  #    それが障害物として認識されるのを避けたい場合に有用です。
+  #    Lidarの0度がロボットの後方であるあなたの設定に合わせています。
+  #    後ろの±10度をフィルタリングする場合の例:
+  # - name: "angular_filter_back"
+  #   type: "laser_filters/LaserScanAngularBoundsFilter"
+  #   params:
+  #     min_angle: -0.1745 # -10度 (ラジアン)
+  #     max_angle: 0.1745  # 10度 (ラジアン)
+  #     invert_filter: false # trueにすると、指定した角度範囲"外"の点を削除
